@@ -1,0 +1,65 @@
+{
+  "kuerzel": "by",
+  "ordner": "bayern",
+  "name": "Bayern",
+  "feiertage": [
+    "neujahr",
+    "heilige-drei-koenige",
+    "karfreitag",
+    "ostermontag",
+    "tag-der-arbeit",
+    "christi-himmelfahrt",
+    "pfingstmontag",
+    "fronleichnam",
+    "tag-der-deutschen-einheit",
+    "allerheiligen",
+    "weihnachtstag-1",
+    "weihnachtstag-2"
+  ],
+  "feiertage_wahlweise": [
+    "mariae-himmelfahrt"
+  ],
+  "schulfrei": [
+    "buss-und-bettag"
+  ],
+  "hinweis": "Mariä Himmelfahrt ist nur in Gemeinden mit überwiegend katholischer Bevölkerung gesetzlicher Feiertag (eigene Kalender mit und ohne). Buß- und Bettag ist kein gesetzlicher Feiertag, aber unterrichtsfrei – er steht bei den Ferien. Das Augsburger Friedensfest (nur Stadt Augsburg) ist nicht enthalten.",
+  "quelle": {
+    "titel": "Ferienordnung und schulfreie Samstage für die Schuljahre 2024/2025 bis 2029/2030, Bekanntmachung des StMUK vom 7. Dezember 2022, Az. IV.7-BS4407/521/59",
+    "fundstelle": "BayMBl. 2022 Nr. 747 vom 21.12.2022",
+    "beleg": "belege/bayern-baymbl-2022-747.pdf",
+    "uebernommen": "2026-11-13"
+  },
+  "ferien": [
+    {"name": "Sommerferien", "von": "2025-08-01", "bis": "2025-09-15"},
+    {"name": "Herbstferien", "von": "2025-11-03", "bis": "2025-11-07"},
+    {"name": "Weihnachtsferien", "von": "2025-12-22", "bis": "2026-01-05"},
+    {"name": "Frühjahrsferien", "von": "2026-02-16", "bis": "2026-02-20"},
+    {"name": "Osterferien", "von": "2026-03-30", "bis": "2026-04-10"},
+    {"name": "Pfingstferien", "von": "2026-05-26", "bis": "2026-06-05"},
+    {"name": "Sommerferien", "von": "2026-08-03", "bis": "2026-09-14"},
+    {"name": "Herbstferien", "von": "2026-11-02", "bis": "2026-11-06"},
+    {"name": "Weihnachtsferien", "von": "2026-12-24", "bis": "2027-01-08"},
+    {"name": "Frühjahrsferien", "von": "2027-02-08", "bis": "2027-02-12"},
+    {"name": "Osterferien", "von": "2027-03-22", "bis": "2027-04-02"},
+    {"name": "Pfingstferien", "von": "2027-05-18", "bis": "2027-05-28"},
+    {"name": "Sommerferien", "von": "2027-08-02", "bis": "2027-09-13"},
+    {"name": "Herbstferien", "von": "2027-11-02", "bis": "2027-11-05"},
+    {"name": "Weihnachtsferien", "von": "2027-12-24", "bis": "2028-01-07"},
+    {"name": "Frühjahrsferien", "von": "2028-02-28", "bis": "2028-03-03"},
+    {"name": "Osterferien", "von": "2028-04-10", "bis": "2028-04-21"},
+    {"name": "Pfingstferien", "von": "2028-06-06", "bis": "2028-06-16"},
+    {"name": "Sommerferien", "von": "2028-07-31", "bis": "2028-09-11"},
+    {"name": "Herbstferien", "von": "2028-10-30", "bis": "2028-11-03"},
+    {"name": "Weihnachtsferien", "von": "2028-12-23", "bis": "2029-01-05"},
+    {"name": "Frühjahrsferien", "von": "2029-02-12", "bis": "2029-02-16"},
+    {"name": "Osterferien", "von": "2029-03-26", "bis": "2029-04-06"},
+    {"name": "Pfingstferien", "von": "2029-05-22", "bis": "2029-06-01"},
+    {"name": "Sommerferien", "von": "2029-07-30", "bis": "2029-09-10"},
+    {"name": "Herbstferien", "von": "2029-10-29", "bis": "2029-11-02"},
+    {"name": "Weihnachtsferien", "von": "2029-12-24", "bis": "2030-01-04"},
+    {"name": "Frühjahrsferien", "von": "2030-03-04", "bis": "2030-03-08"},
+    {"name": "Osterferien", "von": "2030-04-15", "bis": "2030-04-26"},
+    {"name": "Pfingstferien", "von": "2030-06-11", "bis": "2030-06-21"},
+    {"name": "Sommerferien", "von": "2030-07-29", "bis": "2030-09-09"}
+  ]
+}

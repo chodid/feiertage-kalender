@@ -1,0 +1,5 @@
+ausgabe/
+basis/
+__pycache__/
+*.pyc
+.venv/
