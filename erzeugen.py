@@ -163,6 +163,10 @@ def pruefe_land(land, basis=None):
             gesehen.add(k)
     if isinstance(land.get("feiertage_wahlweise"), list) and len(land["feiertage_wahlweise"]) > 1:
         f.append(f"{d}: höchstens ein Feiertag in feiertage_wahlweise")
+    for i, v in enumerate(land.get("verweise", []) if isinstance(land.get("verweise", []), list) else [None], 1):
+        if (not isinstance(v, dict) or set(v) != {"frage", "text", "adresse"} or not all(isinstance(x, str) and x for x in v.values())
+                or not v["adresse"].startswith("https://")):
+            f.append(f"{d}: verweise Nr. {i}: erwartet genau frage, text, adresse (https://…)")
     quelle = land.get("quelle")
     if not isinstance(quelle, dict):
         f.append(f"{d}: Feld „quelle“ fehlt")
@@ -404,6 +408,8 @@ def startseite(alle):
             f'<section aria-labelledby="{esc(land["ordner"])}">\n<h2 id="{esc(land["ordner"])}">{esc(land["name"])}</h2>\n'
             f'<ul class="kalender">\n' + "\n".join(zeilen) + '\n</ul>\n'
             f'<div class="hinweis"><p>{esc(land.get("hinweis", ""))}</p>\n'
+            + "".join(f'<p>{esc(v["frage"])} Das zeigt die <a href="{esc(v["adresse"])}">{esc(v["text"])}</a>.</p>\n'
+                      for v in land.get("verweise", [])) +
             f'<p>Ferien eingetragen bis {datum_lang(kalender[0]["ferien_bis"])}. Quelle: '
             f'<a href="{esc(beleg)}">{esc(quelle["fundstelle"])}</a>.</p></div>\n</section>')
     apps = "\n".join(f"<li><h3>{esc(n)}</h3>\n<p>{esc(t)}</p></li>" for n, t in APPS)

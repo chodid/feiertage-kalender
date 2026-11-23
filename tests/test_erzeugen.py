@@ -66,6 +66,9 @@ class Daten(unittest.TestCase):
     def test_zu_lang(self):
         self.assertIn("länger als 70 Tage", self.fehler(lambda l: l["ferien"][0].update(bis="2025-10-31")))
 
+    def test_verweis_ohne_https(self):
+        self.assertIn("verweise Nr. 1", self.fehler(lambda l: l["verweise"][0].update(adresse="http://example.org/")))
+
     def test_feld_zu_viel(self):
         self.assertIn("erwartet genau", self.fehler(lambda l: l["ferien"][0].update(notiz="x")))
 
