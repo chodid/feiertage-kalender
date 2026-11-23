@@ -19,6 +19,7 @@ import html
 import json
 import os
 import re
+import shutil
 import sys
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -351,43 +352,107 @@ def als_json(kal):
     return json.dumps(sauber, ensure_ascii=False, indent=1) + "\n"
 
 
+MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November",
+          "Dezember"]
+APPS = [("Apple Kalender", "iPhone, iPad, Mac: auf „Abonnieren“ tippen. Oder im Kalender „Kalenderabo hinzufügen“ wählen "
+         "und die Adresse einfügen."),
+        ("Google Kalender", "Im Browser links bei „Weitere Kalender“ auf „+“, dann „Per URL“ und die kopierte Adresse "
+         "einfügen."),
+        ("Outlook", "„Kalender hinzufügen“, dann „Aus dem Internet abonnieren“ und die kopierte Adresse einfügen."),
+        ("Thunderbird", "„Neuer Kalender“, dann „Im Netzwerk“ und die kopierte Adresse einfügen.")]
+
+
+def datum_lang(text):
+    d = dt.date.fromisoformat(text[:10])
+    return f"{d.day}. {MONATE[d.month - 1]} {d.year}"
+
+
+def untertitel(land, kennung):
+    """Ein Satz zum Inhalt eines Kalenders für die Eingangsseite."""
+    datei = kennung.split("/", 1)[1]
+    wahl = [TAGE[k][0] for k in land["feiertage_wahlweise"]]
+    frei = [TAGE[k][0].replace(" (schulfrei)", "") for k in land["schulfrei"]]
+    feiertage = "Gesetzliche Feiertage"
+    if wahl:
+        feiertage += f" {'ohne' if '-ohne-' in datei else 'mit'} {wahl[0]}"
+    ferien = "Schulferien" + (f" und {frei[0]}" if frei else "")
+    if datei.startswith("feiertage"):
+        return feiertage
+    return ferien if datei == "ferien" else f"{feiertage}, dazu {ferien}"
+
+
 def startseite(alle):
-    """Schlichte Eingangsseite mit den Abo-Adressen."""
-    zeilen = []
+    """Eingangsseite mit den Abo-Adressen; Stil, Schriften und Bildmarke liegen in seite/."""
+    esc = html.escape
+    teile = []
     for land, kalender in alle:
-        zeilen.append(f"<h2>{html.escape(land['name'])}</h2>\n<table>\n<tr><th>Kalender</th><th>Termine</th>"
-                      "<th>Abonnieren</th><th>Daten</th></tr>")
+        zeilen = []
         for kal in kalender:
             k = kal["kalender"]["kennung"]
+            name = kal["kalender"]["name"]
             webcal = SEITE.replace("https://", "webcal://") + k + ".ics"
-            zeilen.append(f"<tr><td>{html.escape(kal['kalender']['name'])}</td><td>{len(kal['termine'])}</td>"
-                          f"<td><a href=\"{webcal}\">abonnieren</a> · <a href=\"{k}.ics\">{k}.ics</a></td>"
-                          f"<td><a href=\"{k}.json\">{k}.json</a></td></tr>")
-        zeilen.append(f"</table>\n<p class=\"klein\">Ferien bis {kalender[0]['ferien_bis']} – Quelle: "
-                      f"{html.escape(land['quelle']['fundstelle'])}. {html.escape(land.get('hinweis', ''))}</p>")
-    stand = alle[0][1][0]["erzeugt"] if alle else ""
+            zeilen.append(
+                f'<li>\n<div><h3>{esc(name)}</h3>\n<p>{esc(untertitel(land, k))} · '
+                f'<span class="zahl mono">{len(kal["termine"])} Termine</span></p></div>\n'
+                f'<div class="knoepfe"><a class="knopf" href="{webcal}">Abonnieren</a>'
+                f'<button class="knopf zweit" type="button" data-adresse="{k}.ics">Adresse kopieren</button></div>\n'
+                f'<div class="dateien"><a class="mono" href="{k}.ics">{k}.ics</a>'
+                f'<a class="mono" href="{k}.json">{k}.json</a></div>\n</li>')
+        quelle = land["quelle"]
+        beleg = f'{QUELLTEXT}/blob/main/{quelle["beleg"]}'
+        teile.append(
+            f'<section aria-labelledby="{esc(land["ordner"])}">\n<h2 id="{esc(land["ordner"])}">{esc(land["name"])}</h2>\n'
+            f'<ul class="kalender">\n' + "\n".join(zeilen) + '\n</ul>\n'
+            f'<div class="hinweis"><p>{esc(land.get("hinweis", ""))}</p>\n'
+            f'<p>Ferien eingetragen bis {datum_lang(kalender[0]["ferien_bis"])}. Quelle: '
+            f'<a href="{esc(beleg)}">{esc(quelle["fundstelle"])}</a>.</p></div>\n</section>')
+    apps = "\n".join(f"<li><h3>{esc(n)}</h3>\n<p>{esc(t)}</p></li>" for n, t in APPS)
+    stand = datum_lang(alle[0][1][0]["erzeugt"]) if alle else ""
     return f"""<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Feiertage und Schulferien als Kalender</title>
-<style>
-:root {{ color-scheme: light dark; }}
-body {{ font: 16px/1.5 system-ui, sans-serif; max-width: 60rem; margin: 0 auto; padding: 1rem; }}
-table {{ border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }}
-th, td {{ text-align: left; padding: .35rem .75rem .35rem 0; border-bottom: 1px solid #8884; vertical-align: top; }}
-.klein {{ font-size: .875rem; opacity: .8; }}
-</style>
+<meta name="description" content="Gesetzliche Feiertage und Schulferien für Bayern und Brandenburg zum Abonnieren in jeder Kalender-App und als JSON.">
+<meta name="theme-color" content="#fcfaf8">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="schriften/young-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="stil.css">
 </head>
 <body>
-<h1>Feiertage und Schulferien als Kalender</h1>
-<p>Gesetzliche Feiertage und Schulferien zum Abonnieren in jeder Kalender-App (<code>.ics</code>) und als
-<code>.json</code> für Programme. Die Adresse eines Kalenders im Kalender-Programm als „Kalenderabo“ bzw.
-„per URL hinzufügen“ eintragen. Alle Termine sind ganztägig und als „frei“ markiert.</p>
-{chr(10).join(zeilen)}
-<p class="klein">Angaben ohne Gewähr; maßgeblich sind die amtlichen Veröffentlichungen. Beschreibung, Datenformat,
-Quellen und Fehler melden: <a href="{QUELLTEXT}">{QUELLTEXT}</a>. Daten: CC0 1.0. Stand: {stand}.</p>
+<header class="kopf">
+<div class="rahmen">
+<img src="bildmarke.svg" alt="" width="56" height="83">
+<div>
+<p class="label">Kalender-Abo</p>
+<h1>Feiertage und Schulferien</h1>
+<p class="lead">Gesetzliche Feiertage und Schulferien für deinen Kalender – einmal abonnieren, dann bleiben sie von
+selbst aktuell. Alle Termine sind ganztägig, als „frei“ markiert und ohne Erinnerung.</p>
+</div>
+</div>
+</header>
+<main class="rahmen">
+{chr(10).join(teile)}
+<section aria-labelledby="anleitung">
+<h2 id="anleitung">So abonnierst du</h2>
+<ul class="schritte">
+{apps}
+</ul>
+<div class="hinweis"><p>Für Programme und Webseiten gibt es jeden Kalender auch als <code>.json</code>. Das Format und
+Hinweise zum Abgleich stehen in der <a href="{QUELLTEXT}#json-format">Beschreibung auf GitHub</a>.</p></div>
+</section>
+</main>
+<footer>
+<div class="rahmen">
+<p>Angaben ohne Gewähr – maßgeblich sind die amtlichen Veröffentlichungen. Fehler meldest du am besten als
+<a href="{QUELLTEXT}/issues">Issue auf GitHub</a>; dort liegen auch die Daten, die Belege und der Quelltext.</p>
+<p>Daten frei verwendbar (CC0 1.0). Stand: {stand}.</p>
+</div>
+</footer>
+<script src="kopieren.js" defer></script>
 </body>
 </html>
 """
@@ -410,6 +475,7 @@ def erzeugen(ziel):
             print(f"{kal['kalender']['kennung']}: {len(kal['termine'])} Termine, ab {kal['fenster_von']}")
     with open(os.path.join(ziel, "index.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(startseite(alle))
+    shutil.copytree(os.path.join(REPO, "seite"), ziel, dirs_exist_ok=True)   # Stil, Schriften, Bildmarke, Favicons
     return 0
 
 

@@ -1,0 +1,102 @@
+/* Eingangsseite der Kalender. Farben, Schriften und Abstände nach den Tokens des Chadid-Brandings. */
+@font-face { font-family: "Young Serif"; src: url("schriften/young-serif.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Source Sans 3"; src: url("schriften/source-sans-3.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Source Sans 3"; src: url("schriften/source-sans-3-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Source Code Pro"; src: url("schriften/source-code-pro.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+:root {
+  --plum-25: #f7f3fa; --plum-50: #efe8f5; --plum-200: #cab4db; --plum-500: #704b89; --plum-600: #57376d; --plum-700: #372544;
+  --orange-100: #ffeade; --orange-500: #f97c3d; --orange-600: #db551d; --orange-700: #ad4216;
+  --neutral-0: #fdfcfb; --neutral-25: #fcfaf8; --neutral-100: #f6f3f0; --neutral-300: #e6dfe2; --neutral-400: #cfc6cc;
+  --neutral-600: #77707a; --neutral-700: #5c5360; --neutral-900: #26212a;
+
+  --bg-page: var(--neutral-25); --bg-surface: var(--neutral-0); --bg-section: var(--neutral-100); --bg-subtle: var(--plum-50);
+  --text-primary: var(--neutral-900); --text-secondary: var(--neutral-700); --text-tertiary: var(--neutral-600);
+  --text-accent: var(--orange-700); --text-on-brand: var(--neutral-0);
+  --text-h1: var(--plum-700); --text-h2: var(--plum-500); --text-h3: var(--plum-700);
+  --border-subtle: var(--neutral-300); --border-strong: var(--neutral-400); --border-brand: var(--plum-500);
+  --action-primary: var(--plum-500); --action-primary-hover: var(--plum-600); --action-primary-active: var(--plum-700);
+  --link: var(--plum-500); --link-hover: var(--plum-700); --focus-ring: var(--orange-600); --marker: var(--orange-500);
+  --highlight: var(--orange-100);
+
+  --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --font-body: "Source Sans 3", "Source Sans Pro", Helvetica, Arial, sans-serif;
+  --font-mono: "Source Code Pro", Menlo, Consolas, monospace;
+  --radius-md: 6px; --radius-lg: 8px;
+  --shadow-card: 0 1px 2px rgb(55 37 68 / .05);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg-page); color: var(--text-primary); font: 400 15px/1.55 var(--font-body); }
+.rahmen { max-width: 62rem; margin: 0 auto; padding: 0 24px; }
+a { color: var(--link); text-underline-offset: 2px; }
+a:hover { color: var(--link-hover); }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-md); }
+code, .mono { font: 400 13px/1.4 var(--font-mono); }
+
+/* Kopf */
+.kopf { padding: 48px 0 32px; border-bottom: 1px solid var(--marker); }
+.kopf .rahmen { display: flex; gap: 24px; align-items: flex-end; }
+.kopf img { width: 56px; height: auto; flex: none; }
+.label { margin: 0 0 12px; font: 600 12px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--text-accent); }
+h1 { margin: 0; font: 400 44px/1.05 var(--font-display); font-variant-caps: small-caps; letter-spacing: .01em; color: var(--text-h1); text-wrap: balance; }
+.lead { margin: 16px 0 0; max-width: 44rem; font-size: 17px; color: var(--text-secondary); }
+
+/* Abschnitte */
+main section { padding: 48px 0 0; }
+h2 { margin: 0 0 16px; font: 400 32px/1.05 var(--font-display); color: var(--text-h2); }
+h3 { margin: 0; font: 400 20px/1.15 var(--font-display); color: var(--text-h3); }
+
+.kalender { list-style: none; margin: 0; padding: 0; background: var(--bg-surface); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+.kalender li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 24px; align-items: center; padding: 16px 24px; }
+.kalender li + li { border-top: 1px solid var(--neutral-100); }
+.kalender p { margin: 4px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.4; }
+.kalender .zahl { color: var(--text-tertiary); white-space: nowrap; }
+.knoepfe { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+.knopf { display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: var(--radius-md); cursor: pointer;
+  font: 400 13px/1 var(--font-display); text-decoration: none; border: 1px solid var(--action-primary);
+  background: var(--action-primary); color: var(--text-on-brand); transition: background-color .15s cubic-bezier(.2, 0, 0, 1), border-color .15s cubic-bezier(.2, 0, 0, 1); }
+.knopf:hover { background: var(--action-primary-hover); border-color: var(--action-primary-hover); color: var(--text-on-brand); }
+.knopf:active { background: var(--action-primary-active); border-color: var(--action-primary-active); }
+.knopf.zweit { background: var(--bg-surface); color: var(--action-primary); border-color: var(--border-strong); }
+.knopf.zweit:hover { background: var(--bg-subtle); border-color: var(--border-brand); color: var(--action-primary-hover); }
+.knopf.zweit.fertig { background: var(--highlight); border-color: var(--marker); color: var(--plum-700); }
+.dateien { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--text-tertiary); font-size: 13px; }
+.dateien a { overflow-wrap: anywhere; }
+
+.hinweis { margin: 16px 0 0; padding: 16px 24px; background: var(--bg-section); border-radius: var(--radius-lg);
+  color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+.hinweis p { margin: 0; }
+.hinweis p + p { margin-top: 8px; }
+
+/* Anleitung */
+.schritte { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.schritte li { padding: 16px 24px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.schritte h3 { font: 600 17px/1.4 var(--font-body); }
+.schritte p { margin: 4px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+
+/* Fuß */
+footer { margin-top: 64px; padding: 32px 0 48px; background: var(--bg-section); color: var(--text-secondary); font-size: 13px; }
+footer p { margin: 0; max-width: 46rem; }
+footer p + p { margin-top: 8px; }
+
+@media (max-width: 40rem) {
+  .rahmen { padding: 0 16px; }
+  .kopf { padding: 32px 0 24px; }
+  .kopf .rahmen { gap: 16px; align-items: flex-start; }
+  .kopf img { width: 40px; }
+  h1 { font-size: 32px; }
+  h2 { font-size: 24px; }
+  .lead { font-size: 15px; }
+  .kalender li { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+  .knoepfe { justify-content: flex-start; }
+  .hinweis, .schritte li { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .knopf { transition: none; } }
+@media print {
+  body { background: #fff; color: #000; }
+  .knoepfe { display: none; }
+  footer { background: none; }
+}

@@ -39,7 +39,8 @@ selbst regelmäßig ab; wie oft, bestimmt die App.
   Pfingstmontag, Fronleichnam, Tag der Deutschen Einheit, Allerheiligen, 1. und 2. Weihnachtstag.
 - **Mariä Himmelfahrt (15. August)** ist in Bayern nur in Gemeinden mit überwiegend katholischer Bevölkerung
   gesetzlicher Feiertag. Deshalb gibt es die bayerischen Kalender mit und ohne diesen Tag. Welche Gemeinden dazu
-  gehören, veröffentlicht das Bayerische Landesamt für Statistik.
+  gehören, steht in der
+  [Gemeindeliste des Bayerischen Landesamts für Statistik](https://statistik.bayern.de/statistik/gebiet_bevoelkerung/zensus/himmelfahrt/index.php).
 - **Buß- und Bettag** ist in Bayern kein gesetzlicher Feiertag, aber unterrichtsfrei. Er steht deshalb als
   „Buß- und Bettag (schulfrei)“ bei den **Ferien**, nicht bei den Feiertagen.
 - Das **Augsburger Friedensfest** (8. August, nur Stadt Augsburg) ist nicht enthalten.
@@ -127,6 +128,7 @@ Aufbau der Kennungen: `ff-feiertag-<land>-<jahr>-<name>@feiertage-kalender` und
 | `daten/<land>.json` | je Land: Feiertage (Kennungen), Ferien mit erstem und letztem Tag, Quelle |
 | `belege/` | amtliche Veröffentlichungen, aus denen die Ferien übernommen sind |
 | `erzeugen.py` | prüft die Daten und erzeugt alle Kalender (nur Python-Standardbibliothek) |
+| `seite/` | Stil, Schriften, Bildmarke und Favicons der Eingangsseite (werden unverändert mitveröffentlicht) |
 | `tests/` | Tests der Prüfung und der Erzeugung |
 | `.github/workflows/kalender.yml` | prüft jeden Pull Request; veröffentlicht nach dem Merge auf GitHub Pages |
 
@@ -148,6 +150,9 @@ Die veröffentlichten Dateien entstehen bei jedem Merge nach `main`, bei einem S
 
 - Programmcode: [AGPL-3.0](LICENSE)
 - Daten in `daten/`, Belege und die erzeugten Kalender: [CC0 1.0](LICENSE-DATA) – frei verwendbar, ohne Bedingungen.
+- Schriften der Eingangsseite (`seite/schriften/`: Young Serif, Source Sans 3, Source Code Pro): SIL Open Font License 1.1,
+  Lizenztexte liegen daneben. Die Bildmarke und die Favicons in `seite/` sind **nicht** frei verwendbar – sie gehören
+  nicht zu den Daten und nicht zum freien Quelltext.
 
 ## English summary
 
