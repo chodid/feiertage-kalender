@@ -1,0 +1,100 @@
+# Prüfen, erzeugen und veröffentlichen.
+# - Pull Request: Daten prüfen, Tests, Kalender erzeugen, Unterschied der Termine als Zusammenfassung – ohne Veröffentlichen.
+# - Push auf main, von Hand und am 2. Januar: dasselbe, danach Veröffentlichung auf GitHub Pages aus dem Lauf-Artefakt.
+# Der Lauf am 2. Januar schiebt den Zeitraum der Kalender weiter. GitHub schaltet Zeitpläne nach 60 Tagen ohne Commit ab;
+# dann den Workflow im Januar einmal von Hand starten (Actions → Kalender → Run workflow).
+# Keine Secrets; fremde Actions mit festem Commit.
+name: Kalender
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "23 5 2 1 *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kalender-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pruefen:
+    name: Prüfen und erzeugen
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Daten prüfen
+        run: python3 erzeugen.py pruefen
+
+      - name: Tests
+        if: ${{ !cancelled() }}
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Kalender erzeugen
+        run: python3 erzeugen.py erzeugen ausgabe
+
+      - name: Erzeugte Kalender mit unabhängigem Parser lesen
+        run: |
+          python3 -m venv "${RUNNER_TEMP}/parser"
+          "${RUNNER_TEMP}/parser/bin/pip" install --quiet --require-hashes -r .github/requirements.txt
+          "${RUNNER_TEMP}/parser/bin/python" tests/ics_pruefen.py ausgabe | tee -a "${GITHUB_STEP_SUMMARY}"
+
+      - name: Stand des Ziel-Branches holen (nur Pull Request)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: basis
+          persist-credentials: false
+
+      - name: Unterschied der Termine (nur Pull Request)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          # Die Daten des Ziel-Branches mit der Erzeugung dieses Pull Requests – so zeigt der Vergleich Daten und Regeln.
+          mkdir -p "${RUNNER_TEMP}/alt"
+          if [ -d basis/daten ] && DATEN="${PWD}/basis/daten" python3 erzeugen.py erzeugen "${RUNNER_TEMP}/alt" >/dev/null; then
+            :
+          else
+            rm -rf "${RUNNER_TEMP}/alt"
+          fi
+          { echo; python3 erzeugen.py vergleich "${RUNNER_TEMP}/alt" ausgabe; } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Kalender als Artefakt (Pull Request)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: kalender
+          path: ausgabe
+          retention-days: 14
+
+      - name: Kalender als Pages-Artefakt
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9  # v5.0.0
+        with:
+          path: ausgabe
+
+  veroeffentlichen:
+    name: Auf GitHub Pages veröffentlichen
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    needs: pruefen
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - name: Veröffentlichen
+        id: pages
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346  # v5.0.1
