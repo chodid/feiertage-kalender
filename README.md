@@ -125,7 +125,7 @@ Aufbau der Kennungen: `ff-feiertag-<land>-<jahr>-<name>@feiertage-kalender` und
 
 | Pfad | Inhalt |
 |---|---|
-| `daten/<land>.json` | je Land: Feiertage (Kennungen), Ferien mit erstem und letztem Tag, Quelle |
+| `daten/<land>.json` | je Land: Feiertage (Kennungen), Ferien mit erstem und letztem Tag, Quelle, Hinweis und Verweise für die Eingangsseite |
 | `belege/` | amtliche Veröffentlichungen, aus denen die Ferien übernommen sind |
 | `erzeugen.py` | prüft die Daten und erzeugt alle Kalender (nur Python-Standardbibliothek) |
 | `seite/` | Stil, Schriften, Bildmarke und Favicons der Eingangsseite (werden unverändert mitveröffentlicht) |
